@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chanakya ⚡ | the evolution</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .user, .bot {
+      ...
+      font-size: 16px; /* ya koi bada size ho to */
+  }
+  .user, .bot {
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 80%;
+    animation: fadeIn 0.3s ease-in-out;
+    font-size: 14px; /* 🔽 made smaller */
+    line-height: 1.5; /* for better readability */
+}
+  
+    body {
+      background-color: #000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #000;
+      color: #00ffff;
+      font-size: 26px;
+      font-weight: bold;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #111;
+      position: relative;
+    }
+
+    header::after {
+      content: "⚡";
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      font-size: 28px;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.6; }
+    }
+
+    #chatbox {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background-color: #000;
+    }
+
+    .user, .bot {
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 80%;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .user {
+      background-color: #111;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .bot {
+      background-color: #1a1a1a;
+      align-self: flex-start;
+      margin-right: auto;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .input-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      background-color: #000;
+      border-top: 1px solid #111;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      background: #111;
+      color: #fff;
+    }
+
+    button {
+      background: #00ffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #00cccc;
+    }
+
+    .new-chat-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #00ffff;
+      color: #000;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .new-chat-btn:hover {
+      background-color: #00cccc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Chanakya ⚡
+    <button class="new-chat-btn" onclick="startNewChat()">+ New Chat</button>
+  </header>
+
+  <div id="chatbox"></div>
+
+  <div class="input-area">
+    <input type="text" id="message" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const messageInput = document.getElementById("message");
+      const chatbox = document.getElementById("chatbox");
+      const message = messageInput.value;
+
+      if (!message.trim()) return;
+
+      chatbox.innerHTML += `<div class="user">🧑‍💻 ${message}</div>`;
+      messageInput.value = "";
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await response.json();
+      chatbox.innerHTML += `<div class="bot">🤖 ${data.reply}</div>`;
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function startNewChat() {
+      document.getElementById("chatbox").innerHTML = "";
+    }
+  </script>
+</body>
+</html>
